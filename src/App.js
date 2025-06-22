@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import Explosion from "./Explosion"; // ←追加
+import ExplosionThree from "./ExplosionThree"; // Three.js演出
+import Explosion from "./Explosion";           // CSSアニメ or 画像演出
 
 function App() {
   const [sql, setSql] = useState("");
+  const [showExplosionThree, setShowExplosionThree] = useState(false);
   const [showExplosion, setShowExplosion] = useState(false);
 
   const handleRun = () => {
@@ -13,8 +15,17 @@ function App() {
       sqlLower.includes(">=") &&
       sqlLower.includes("30")
     ) {
-      setShowExplosion(true);
-      setTimeout(() => setShowExplosion(false), 1000); // 1秒後に非表示
+      // Step 1: Three.js 爆発演出開始
+      setShowExplosionThree(true);
+
+      setTimeout(() => {
+        // Step 2: Three.js 終了、Explosion.js 開始
+        setShowExplosionThree(false);
+        setShowExplosion(true);
+
+        // Step 3: Explosion.js 終了
+        setTimeout(() => setShowExplosion(false), 1000);
+      }, 1000);
     } else {
       alert("❌ 条件が合っていません");
     }
@@ -22,7 +33,10 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8 font-sans">
+      {/* 順に表示 */}
+      {showExplosionThree && <ExplosionThree />}
       {showExplosion && <Explosion />}
+
       <h1 className="text-3xl font-bold text-center text-orange-600 mb-8">
         💣 SQL BLAST GAME
       </h1>
